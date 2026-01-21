@@ -34,20 +34,34 @@ project(mcu_firmware C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
+add_executable(pio_spi_flash)
+
+pico_generate_pio_header(pio_spi_flash ${CMAKE_CURRENT_LIST_DIR}/spi.pio)
+
+target_sources(pio_spi_flash PRIVATE
+        spi_flash.c
+        pio_spi.c
+        pio_spi.h
+        )
+
+target_link_libraries(pio_spi_flash PRIVATE pico_stdlib hardware_pio)
+pico_add_extra_outputs(pio_spi_flash)
 add_executable(mcu_firmware)
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(mcu_firmware 1)
 pico_enable_stdio_usb(mcu_firmware 1)
-
+pico_generate_pio_header(mcu_firmware ${CMAKE_CURRENT_LIST_DIR}/spi.pio)
 
 target_sources(mcu_firmware PRIVATE
         firmware.c
+        pio_spi.c
+        pio_spi.h
         soft_spi.c
         soft_spi.h
         )
 
-target_link_libraries(mcu_firmware PRIVATE pico_stdlib hardware_watchdog)
+target_link_libraries(mcu_firmware PRIVATE pico_stdlib hardware_pio hardware_spi hardware_watchdog)
 pico_add_extra_outputs(mcu_firmware)
 
 
