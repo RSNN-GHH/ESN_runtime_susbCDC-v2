@@ -56,7 +56,7 @@ class spikeActivation():
         frame_size, count_win_us = struct.unpack('<II', data)
         return frame_size, count_win_us
     
-    def init(self, com_port='COM4', max_retries=3):
+    def init(self, com_port='COM7', max_retries=3):
         """
         初始化串口连接
         :param com_port: 要尝试连接的COM端口 (默认 COM4)
