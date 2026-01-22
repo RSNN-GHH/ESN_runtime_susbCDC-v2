@@ -9,11 +9,10 @@
 #include "pio_spi.h"
 #include "firmware.h"
 
-#define COUNT_PIN 1
 
 const uint8_t v[4] = {0x00, 0x02, 0x04, 0x06}; // 器件通道选择
 const uint8_t comp_ref = 0x00;          // 比较器参考电压通道
-
+const uint8_t o[4] = {36, 37, 34, 35}; //  输出通道选择
 static uint32_t count_win_us = 1000;
 static uint32_t frame_size16 = 64;
 
@@ -88,12 +87,12 @@ static void cdc_read_exact(uint8_t *buf, size_t len) {
 // }
 
 // 在 count_win_us 窗口内计数脉冲
-static uint16_t count_pulse(void) {
+static uint16_t count_pulse(uint8_t count_pin) {
     uint16_t pulse = 0;
     uint32_t start = time_us_32();
     while (time_us_32() - start < count_win_us) {
-        if (gpio_get(COUNT_PIN)) {
-            while (gpio_get(COUNT_PIN)) {
+        if (gpio_get(count_pin)) {
+            while (gpio_get(count_pin)) {
                 tight_loop_contents();
             }
             pulse++;
@@ -139,7 +138,7 @@ static void spiking_io(uint16_t *data_to_w,
         // Osc_output(data_to_w[i]);
         dac8568_write_channel(&SPI1, v[0], data_to_w[i]); // DAC1 输出电压
         sleep_us(100);
-        data_read[i] = count_pulse();
+        data_read[i] = count_pulse(o[0]);
         // Osc_output(0);
         dac8568_write_channel(&SPI1, v[0], 0); // DAC1 清零
         sleep_us(100);
@@ -152,8 +151,11 @@ int main() {
     set_sys_clock_khz(300000, true);
     stdio_init_all();
     tusb_init();
-    gpio_init(COUNT_PIN);
-    gpio_set_dir(COUNT_PIN, GPIO_IN);
+    // 初始化计数引脚
+    for (int i = 0; i < 4; i++) {
+        gpio_init(o[i]);
+        gpio_set_dir(o[i], GPIO_IN);
+    }
 
     // 按照原始代码的方式初始化 PIO SPI
     float clkdiv = 2.0f;
