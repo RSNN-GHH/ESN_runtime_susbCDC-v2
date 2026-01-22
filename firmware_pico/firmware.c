@@ -173,7 +173,7 @@ int main() {
     dac8568_init(&SPI1);
     sleep_ms(100);
     //±È½ÏÆ÷µçÑ¹
-    dac8568_write_channel(&SPI0, comp_ref, 32768); 
+    dac8568_write_channel(&SPI0, comp_ref, 65536/10); 
 
     watchdog_enable(2000, 1);
 
