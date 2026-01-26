@@ -6,8 +6,8 @@ from spikeActivation import spikeActivation
 
 
 # ESN参数设置
-train_length = 200
-test_length = 200
+train_length = 3000
+test_length = 3000
 total_length = train_length + test_length
 
 input_size = 1

@@ -6,8 +6,8 @@ from spikeActivation import spikeActivation
 
 
 # ESN参数设置
-train_length = 1000
-test_length = 1000
+train_length = 200
+test_length = 200
 total_length = train_length + test_length
 
 input_size = 1
@@ -60,7 +60,7 @@ sA = spikeActivation(frame_size16, count_win_us)
 sA.init()
 
 # 读取数据
-data = np.loadtxt('MG.txt')
+data = np.loadtxt('periodic_waveform_sequence.txt')
 data = data[:total_length]
 u = data[:, 1].reshape(-1, 1)
 y = data[:, 2].reshape(-1, 1)
