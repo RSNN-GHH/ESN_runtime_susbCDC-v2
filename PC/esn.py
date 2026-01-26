@@ -60,7 +60,7 @@ sA = spikeActivation(frame_size16, count_win_us)
 sA.init()
 
 # 读取数据
-data = np.loadtxt('MG.txt')
+data = np.loadtxt('periodic_waveform_sequence.txt')
 data = data[:total_length]
 u = data[:, 1].reshape(-1, 1)
 y = data[:, 2].reshape(-1, 1)
